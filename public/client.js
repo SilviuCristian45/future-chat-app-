@@ -1,28 +1,36 @@
+
 let username
 
 window.onload = () => {
 
     username = prompt('username-ul tau : ')
     
-    while(username.length >= 20){
+    while(username && username.length >= 20){
         username = prompt('username-ul tau (maxim 20 caractere) ')
     }
 
+    document.getElementById('container').appendChild(buildEmojiPicker())
+
     let socket = io();
-    const form = document.getElementById('form')
-    const inputVal = document.getElementById('message');
-    const fileInputVal = document.getElementById('photo')
+    const form  = document.getElementById('form')
+    const inputVal= document.getElementById('message');
+    const fileInputVal  = document.getElementById('photo')
 
     form.addEventListener('submit', (e) => {
         e.preventDefault();
         const message = inputVal.value;
         //console.log(fileInputVal.files.length);
-        if(fileInputVal.files) { //daca avem imagini incarcate
+        if(fileInputVal.files.length) { //daca avem imagini incarcate
             getBase64(fileInputVal.files[0]).then( (data) => {
                 socket.emit('message-image', data)
             })
         }
-        socket.emit('message', message)
+
+        const container = document.createElement('div')
+        container.innerText = username + ' : ' + message
+        document.getElementById('messages').appendChild(container);
+
+        socket.emit('message', username + ' : ' + message)
         inputVal.value = ''
         fileInputVal.value = ''
     })
@@ -39,7 +47,7 @@ window.onload = () => {
         receivedImage.src += base64image
         receivedImage.width = 300
         receivedImage.height = 150
-        console.log(base64image)
+        //console.log(base64image)
         document.getElementById('messages').appendChild(receivedImage)
     })
 
@@ -54,4 +62,19 @@ function getBase64(image) {
         reader.onload = () => resolve(reader.result)
         reader.onerror = (err) => reject(err)
     })
+}
+
+function buildEmojiPicker(){
+    const picker = document.createElement('select')
+    for(let i = 0; i < emoji.length; i++){
+        const option = document.createElement('option')
+        option.innerText = emoji[i]
+        picker.appendChild(option)
+    }
+
+    picker.onchange = () => {
+        document.getElementById('message').value += picker.value
+    }
+
+    return picker
 }

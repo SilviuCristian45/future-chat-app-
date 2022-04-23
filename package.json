@@ -13,5 +13,8 @@
     "express": "^4.17.3",
     "nodemon": "^2.0.15",
     "socketio": "^1.0.0"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.13"
   }
 }

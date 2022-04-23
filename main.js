@@ -14,11 +14,11 @@ io.on('connection', (socket) => {
 
     //got a message from a client (text)
     socket.on('message', (message) => {
-        socket.emit('msgFromserver',message + '\n')
+        socket.broadcast.emit('msgFromserver',message + '\n')
     })
 
     //got a message from a client (image)
-    socket.on('message-image', (message_image) => socket.emit('imageFromServer', message_image))
+    socket.on('message-image', (message_image) => socket.broadcast.emit('imageFromServer', message_image))
 
     // get the username from the user
     socket.on('gotUsername', (username) => {
